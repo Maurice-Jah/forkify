@@ -29,6 +29,10 @@ class RecipeView {
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
+  // publisher-subscriber pattern
+  addHandlerRender(handler) {
+    ['hashchange', 'load'].forEach(ev => addEventListener(ev, controlRecipes));
+  }
   #generateMarkup() {
     return `
         <figure class="recipe__fig">
