@@ -410,10 +410,13 @@ const controlRecipes = async function () {
     // 2. Rendering the Recipe
     _recipeView.default.render(model.state.recipe);
   } catch (err) {
-    alert(err);
+    _recipeView.default.renderError();
   }
 };
-['hashchange', 'load'].forEach(ev => addEventListener(ev, controlRecipes));
+const init = function () {
+  _recipeView.default.addHandlerRender(controlRecipes);
+};
+init();
 },{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
 var $ = require('../internals/export');
 var global = require('../internals/global');
@@ -1211,7 +1214,7 @@ const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 exports.loadRecipe = loadRecipe;
@@ -1265,6 +1268,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class RecipeView {
   #parentElement = document.querySelector('.recipe');
   #data;
+  #errorMessage = 'We could not find a Recipe. Please try another one';
   render(data) {
     this.#data = data;
     const markup = this.#generateMarkup();
@@ -1282,7 +1286,27 @@ class RecipeView {
         </svg>
       </div> 
     `;
-    this.#parentElement.innerHTML = '';
+    this.#clear();
+    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  // publisher-subscriber pattern
+  addHandlerRender(handler) {
+    ['hashchange', 'load'].forEach(ev => addEventListener(ev, handler));
+  }
+  renderError() {
+    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.#errorMessage;
+    const markup = `
+      <div class="error">
+          <div>
+            <svg>
+              <use href="src/img/icons.svg#icon-alert-triangle"></use>
+            </svg>
+          </div>
+          <p>${message}</p>
+    </div>
+  `;
+    this.#clear();
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   #generateMarkup() {
