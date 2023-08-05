@@ -431,7 +431,7 @@ const controlSearchResults = async function () {
     await model.loadSearchResults(query);
 
     // 3. Display the search
-    _resultsView.default.render(model.state.search.results);
+    _resultsView.default.render(model.getSearchResultsPage());
   } catch (err) {
     console.log(err);
   }
@@ -1213,7 +1213,7 @@ module.exports = getBuiltIn('navigator', 'userAgent') || '';
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.state = exports.loadSearchResults = exports.loadRecipe = void 0;
+exports.state = exports.loadSearchResults = exports.loadRecipe = exports.getSearchResultsPage = void 0;
 var _helpers = require("./helpers.js");
 var _config = require("./config.js");
 var _regeneratorRuntime = require("regenerator-runtime");
@@ -1221,7 +1221,9 @@ const state = {
   recipe: {},
   search: {
     query: '',
-    results: []
+    results: [],
+    page: 1,
+    resultPerPage: _config.RES_PER_PAGE
   }
 };
 exports.state = state;
@@ -1263,7 +1265,17 @@ const loadSearchResults = async function (query) {
     throw err;
   }
 };
+
+// Pagination
 exports.loadSearchResults = loadSearchResults;
+const getSearchResultsPage = function () {
+  let page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.search.page;
+  page = state.search.page;
+  const start = (page - 1) * _config.RES_PER_PAGE;
+  const end = page * _config.RES_PER_PAGE;
+  return state.search.results.slice(start, end);
+};
+exports.getSearchResultsPage = getSearchResultsPage;
 },{"./helpers.js":"0e8dcd8a4e1c61cf18f78e1c2563655d","./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
 "use strict";
 
@@ -1296,11 +1308,13 @@ exports.getJSON = getJSON;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TIMEOUT_SEC = exports.API_URL = void 0;
+exports.TIMEOUT_SEC = exports.RES_PER_PAGE = exports.API_URL = void 0;
 const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
 exports.API_URL = API_URL;
 const TIMEOUT_SEC = 10;
 exports.TIMEOUT_SEC = TIMEOUT_SEC;
+const RES_PER_PAGE = 10;
+exports.RES_PER_PAGE = RES_PER_PAGE;
 },{}],"e155e0d3930b156f86c48e8d05522b16":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
