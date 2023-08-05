@@ -389,8 +389,10 @@ module.exports.resolve = resolve;
 "use strict";
 
 require("core-js/modules/web.immediate.js");
+var _regeneratorRuntime = require("regenerator-runtime");
 var model = _interopRequireWildcard(require("./model.js"));
 var _recipeView = _interopRequireDefault(require("./views/recipeView.js"));
+var _searchView = _interopRequireDefault(require("./views/searchView.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -413,11 +415,30 @@ const controlRecipes = async function () {
     _recipeView.default.renderError();
   }
 };
+
+// Loading the Search Results
+
+const controlSearchResults = async function () {
+  try {
+    // 1. Get the query
+    const query = _searchView.default.getQuery();
+    if (!query) return;
+
+    // 2. Load the search query
+    await model.loadSearchResults(query);
+
+    // 3. Display the search
+    console.log(model.state.search.results);
+  } catch (err) {
+    console.log(err);
+  }
+};
 const init = function () {
   _recipeView.default.addHandlerRender(controlRecipes);
+  _searchView.default.addHandlerSearch(controlSearchResults);
 };
 init();
-},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./views/searchView.js":"c5d792f7cac03ef65de30cc0fbb2cae7"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
 var $ = require('../internals/export');
 var global = require('../internals/global');
 var task = require('../internals/task');
@@ -1235,13 +1256,11 @@ const loadSearchResults = async function (query) {
         publisher: recipe.publisher
       };
     });
-    console.log(state.search.results);
   } catch (err) {
     throw err;
   }
 };
 exports.loadSearchResults = loadSearchResults;
-loadSearchResults('pizza');
 },{"./helpers.js":"0e8dcd8a4e1c61cf18f78e1c2563655d","./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
 "use strict";
 
@@ -2678,6 +2697,33 @@ Fraction.primeFactors = function(n)
 
 module.exports.Fraction = Fraction
 
-},{}]},{},["801d51df063a0f0dbbe3555db709de94","4d6f770d959c759d72c550c84d2f236e","175e469a7ea7db1c8c0744d04372621f"], null)
+},{}],"c5d792f7cac03ef65de30cc0fbb2cae7":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regeneratorRuntime = require("regenerator-runtime");
+class searchView {
+  #parentElement = document.querySelector('.search');
+  getQuery() {
+    const query = document.querySelector('.search__field').value;
+    this.#clearInput();
+    return query;
+  }
+  #clearInput() {
+    document.querySelector('.search__field').value = '';
+  }
+  addHandlerSearch(handler) {
+    this.#parentElement.addEventListener('submit', function (e) {
+      e.preventDefault();
+      handler();
+    });
+  }
+}
+var _default = new searchView();
+exports.default = _default;
+},{"regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}]},{},["801d51df063a0f0dbbe3555db709de94","4d6f770d959c759d72c550c84d2f236e","175e469a7ea7db1c8c0744d04372621f"], null)
 
 //# sourceMappingURL=controller.0e9b2351.js.map

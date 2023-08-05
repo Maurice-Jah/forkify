@@ -44,11 +44,7 @@ export const loadSearchResults = async function (query) {
         publisher: recipe.publisher,
       };
     });
-
-    console.log(state.search.results);
   } catch (err) {
     throw err;
   }
 };
-
-loadSearchResults('pizza');
