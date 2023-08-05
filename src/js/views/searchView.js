@@ -9,7 +9,7 @@ class searchView {
     return query;
   }
 
-  #clearInput() {
+  _clearInput() {
     document.querySelector('.search__field').value = '';
   }
 

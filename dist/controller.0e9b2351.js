@@ -2057,66 +2057,16 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
 var _fractional = require("fractional");
+var _View = _interopRequireDefault(require("./View.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-class RecipeView {
+class RecipeView extends _View.default {
   _parentElement = document.querySelector('.recipe');
-  _data;
   _errorMessage = 'We could not find a Recipe. Please try another one';
   _successMessage = '';
-  render(data) {
-    this._data = data;
-    const markup = this._generateMarkup();
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  _clear() {
-    this._parentElement.innerHTML = '';
-  }
-  renderSpinner() {
-    const markup = `
-     <div class="spinner">
-        <svg>
-          <use href="${_icons.default}#icon-loader"></use>
-        </svg>
-      </div> 
-    `;
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
 
   // publisher-subscriber pattern
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(ev => addEventListener(ev, handler));
-  }
-  renderError() {
-    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._errorMessage;
-    const markup = `
-      <div class="error">
-          <div>
-            <svg>
-              <use href="${_icons.default}#icon-alert-triangle"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-    </div>
-  `;
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  renderSuccess() {
-    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._successMessage;
-    const markup = `
-    <div class="message">  
-        <div>
-          <svg>
-            <use href="${_icons.default}#icon-smile"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-    </div>
-    `;
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   _generateMarkup() {
     return `
@@ -2215,7 +2165,7 @@ class RecipeView {
 }
 var _default = new RecipeView();
 exports.default = _default;
-},{"url:../../img/icons.svg":"76b33937ba3968f92756f86c1adf486d","fractional":"ddbc156a7c16e105c8df04e9fdec967d"}],"76b33937ba3968f92756f86c1adf486d":[function(require,module,exports) {
+},{"url:../../img/icons.svg":"76b33937ba3968f92756f86c1adf486d","fractional":"ddbc156a7c16e105c8df04e9fdec967d","./View.js":"61b7a1b097e16436be3d54c2f1828c73"}],"76b33937ba3968f92756f86c1adf486d":[function(require,module,exports) {
 module.exports = require('./bundle-url').getBundleURL() + require('./relative-path')("87b22d20b37f7947", "7e5504ec721ca0f6");
 },{"./bundle-url":"2146da1905b95151ed14d455c784e7b7","./relative-path":"1b9943ef25c7bbdf0dd1b9fa91880a6c"}],"2146da1905b95151ed14d455c784e7b7":[function(require,module,exports) {
 "use strict";
@@ -2697,7 +2647,70 @@ Fraction.primeFactors = function(n)
 
 module.exports.Fraction = Fraction
 
-},{}],"c5d792f7cac03ef65de30cc0fbb2cae7":[function(require,module,exports) {
+},{}],"61b7a1b097e16436be3d54c2f1828c73":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+class View {
+  _data;
+  render(data) {
+    this._data = data;
+    const markup = this._generateMarkup();
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  _clear() {
+    this._parentElement.innerHTML = '';
+  }
+  renderSpinner() {
+    const markup = `
+     <div class="spinner">
+        <svg>
+          <use href="${_icons.default}#icon-loader"></use>
+        </svg>
+      </div> 
+    `;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderError() {
+    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._errorMessage;
+    const markup = `
+      <div class="error">
+          <div>
+            <svg>
+              <use href="${_icons.default}#icon-alert-triangle"></use>
+            </svg>
+          </div>
+          <p>${message}</p>
+    </div>
+  `;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderSuccess() {
+    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._successMessage;
+    const markup = `
+    <div class="message">  
+        <div>
+          <svg>
+            <use href="${_icons.default}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+    </div>
+    `;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+}
+exports.default = View;
+},{"url:../../img/icons.svg":"76b33937ba3968f92756f86c1adf486d"}],"c5d792f7cac03ef65de30cc0fbb2cae7":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2712,7 +2725,7 @@ class searchView {
     this._clearInput();
     return query;
   }
-  #clearInput() {
+  _clearInput() {
     document.querySelector('.search__field').value = '';
   }
   addHandlerSearch(handler) {
