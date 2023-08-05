@@ -421,6 +421,8 @@ const controlRecipes = async function () {
 
 const controlSearchResults = async function () {
   try {
+    _resultsView.default.renderSpinner();
+
     // 1. Get the query
     const query = _searchView.default.getQuery();
     if (!query) return;
@@ -429,7 +431,6 @@ const controlSearchResults = async function () {
     await model.loadSearchResults(query);
 
     // 3. Display the search
-    console.log(model.state.search.results);
     _resultsView.default.render(model.state.search.results);
   } catch (err) {
     console.log(err);
