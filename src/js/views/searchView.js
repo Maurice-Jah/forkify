@@ -1,11 +1,11 @@
 import { async } from 'regenerator-runtime';
 
 class searchView {
-  #parentElement = document.querySelector('.search');
+  _parentElement = document.querySelector('.search');
 
   getQuery() {
     const query = document.querySelector('.search__field').value;
-    this.#clearInput();
+    this._clearInput();
     return query;
   }
 
@@ -14,7 +14,7 @@ class searchView {
   }
 
   addHandlerSearch(handler) {
-    this.#parentElement.addEventListener('submit', function (e) {
+    this._parentElement.addEventListener('submit', function (e) {
       e.preventDefault();
       handler();
     });
