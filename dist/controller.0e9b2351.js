@@ -393,6 +393,7 @@ var _regeneratorRuntime = require("regenerator-runtime");
 var model = _interopRequireWildcard(require("./model.js"));
 var _recipeView = _interopRequireDefault(require("./views/recipeView.js"));
 var _searchView = _interopRequireDefault(require("./views/searchView.js"));
+var _resultsView = _interopRequireDefault(require("./views/resultsView.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -429,6 +430,7 @@ const controlSearchResults = async function () {
 
     // 3. Display the search
     console.log(model.state.search.results);
+    _resultsView.default.render(model.state.search.results);
   } catch (err) {
     console.log(err);
   }
@@ -438,7 +440,7 @@ const init = function () {
   _searchView.default.addHandlerSearch(controlSearchResults);
 };
 init();
-},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./views/searchView.js":"c5d792f7cac03ef65de30cc0fbb2cae7"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./views/searchView.js":"c5d792f7cac03ef65de30cc0fbb2cae7","./views/resultsView.js":"eacdbc0d50ee3d2819f3ee59366c2773"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
 var $ = require('../internals/export');
 var global = require('../internals/global');
 var task = require('../internals/task');
@@ -2737,6 +2739,44 @@ class searchView {
 }
 var _default = new searchView();
 exports.default = _default;
-},{"regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}]},{},["801d51df063a0f0dbbe3555db709de94","4d6f770d959c759d72c550c84d2f236e","175e469a7ea7db1c8c0744d04372621f"], null)
+},{"regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"eacdbc0d50ee3d2819f3ee59366c2773":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+var _View = _interopRequireDefault(require("./View"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+class ResultsView extends _View.default {
+  _parentElement = document.querySelector('.results');
+  _generateMarkup() {
+    return this._data.map(this._generateMarkupPreview).join();
+  }
+  _generateMarkupPreview(result) {
+    return `
+    <li class="preview">
+    <a class="preview__link preview__link--active" href="${result.id}">
+    <figure class="preview__fig">
+        <img src="${result.image}" alt="Test" />
+    </figure>
+    <div class="preview__data">
+        <h4 class="preview__title">${result.title}</h4>
+        <p class="preview__publisher">${result.publisher}</p>
+        <div class="preview__user-generated">
+        <svg>
+            <use href="${_icons.default}#icon-user"></use>
+        </svg>
+        </div>
+    </div>
+    </a>
+</li>
+    `;
+  }
+}
+var _default = new ResultsView();
+exports.default = _default;
+},{"./View":"61b7a1b097e16436be3d54c2f1828c73","url:../../img/icons.svg":"76b33937ba3968f92756f86c1adf486d"}]},{},["801d51df063a0f0dbbe3555db709de94","4d6f770d959c759d72c550c84d2f236e","175e469a7ea7db1c8c0744d04372621f"], null)
 
 //# sourceMappingURL=controller.0e9b2351.js.map
