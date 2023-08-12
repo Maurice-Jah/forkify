@@ -394,6 +394,7 @@ var model = _interopRequireWildcard(require("./model.js"));
 var _recipeView = _interopRequireDefault(require("./views/recipeView.js"));
 var _searchView = _interopRequireDefault(require("./views/searchView.js"));
 var _resultsView = _interopRequireDefault(require("./views/resultsView.js"));
+var _paginationView = _interopRequireDefault(require("./views/paginationView.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -432,16 +433,27 @@ const controlSearchResults = async function () {
 
     // 3. Display the search
     _resultsView.default.render(model.getSearchResultsPage());
+
+    //4. Render inital pagination
+    _paginationView.default.render(model.state.search);
   } catch (err) {
     console.log(err);
   }
 };
+const controlPagination = function (goToPage) {
+  // 1. Render NEW Results
+  _resultsView.default.render(model.getSearchResultsPage(goToPage));
+
+  //2. Render NEW pagination buttons
+  _paginationView.default.render(model.state.search);
+};
 const init = function () {
   _recipeView.default.addHandlerRender(controlRecipes);
   _searchView.default.addHandlerSearch(controlSearchResults);
+  _paginationView.default.addHandlerClick(controlPagination);
 };
 init();
-},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./views/searchView.js":"c5d792f7cac03ef65de30cc0fbb2cae7","./views/resultsView.js":"eacdbc0d50ee3d2819f3ee59366c2773"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./views/searchView.js":"c5d792f7cac03ef65de30cc0fbb2cae7","./views/resultsView.js":"eacdbc0d50ee3d2819f3ee59366c2773","./views/paginationView.js":"d2063f3e7de2e4cdacfcb5eb6479db05"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
 var $ = require('../internals/export');
 var global = require('../internals/global');
 var task = require('../internals/task');
@@ -1243,7 +1255,6 @@ const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       sourceUrl: recipe.source_url
     };
-    console.log(state.recipe);
   } catch (err) {
     throw err;
   }
@@ -1270,7 +1281,7 @@ const loadSearchResults = async function (query) {
 exports.loadSearchResults = loadSearchResults;
 const getSearchResultsPage = function () {
   let page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.search.page;
-  page = state.search.page;
+  state.search.page = page;
   const start = (page - 1) * _config.RES_PER_PAGE;
   const end = page * _config.RES_PER_PAGE;
   return state.search.results.slice(start, end);
@@ -2763,7 +2774,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
-var _View = _interopRequireDefault(require("./View"));
+var _View = _interopRequireDefault(require("./View.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class ResultsView extends _View.default {
   _parentElement = document.querySelector('.results');
@@ -2790,6 +2801,80 @@ class ResultsView extends _View.default {
 }
 var _default = new ResultsView();
 exports.default = _default;
-},{"./View":"61b7a1b097e16436be3d54c2f1828c73","url:../../img/icons.svg":"76b33937ba3968f92756f86c1adf486d"}]},{},["801d51df063a0f0dbbe3555db709de94","4d6f770d959c759d72c550c84d2f236e","175e469a7ea7db1c8c0744d04372621f"], null)
+},{"url:../../img/icons.svg":"76b33937ba3968f92756f86c1adf486d","./View.js":"61b7a1b097e16436be3d54c2f1828c73"}],"d2063f3e7de2e4cdacfcb5eb6479db05":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+var _View = _interopRequireDefault(require("./View.js"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+class PaginationView extends _View.default {
+  _parentElement = document.querySelector('.pagination');
+  addHandlerClick(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--inline');
+      if (!btn) return;
+      const goToPage = +btn.dataset.goto;
+      handler(goToPage);
+    });
+  }
+  _generateMarkup() {
+    const curPage = this._data.page;
+    const numPages = Math.ceil(this._data.results.length / this._data.resultPerPage);
+
+    // page 1, and there are other pages
+    if (curPage === 1 && numPages > 1) {
+      return `
+        <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">
+          <span>Page ${curPage + 1}</span>  
+          <svg class="search__icon">
+            <use href="${_icons.default}#icon-arrow-right"></use>
+          </svg>
+        </button> 
+      `;
+    }
+
+    // last page
+    if (curPage === numPages && numPages > 1) {
+      return `
+      <button data-goto="${curPage - 1}" class="btn--inline pagination__btn--prev">
+          <svg class="search__icon">
+            <use href="${_icons.default}#icon-arrow-left"></use>
+          </svg>
+          <span>Page ${curPage - 1}</span>
+      </button>
+      `;
+    }
+
+    // other pages
+    if (curPage < numPages) {
+      return `
+      <button data-goto="${curPage - 1}" class="btn--inline pagination__btn--prev">
+          <svg class="search__icon">
+            <use href="${_icons.default}#icon-arrow-left"></use>
+          </svg>
+          <span>Page ${curPage - 1}</span>
+     </button>
+
+     <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">
+        <span>Page ${curPage + 1}</span>
+        <svg class="search__icon">
+          <use href="${_icons.default}#icon-arrow-right"></use>
+        </svg>
+     </button> 
+      
+      `;
+    }
+
+    // page 1 and there are no other pages
+    // return '';
+  }
+}
+var _default = new PaginationView();
+exports.default = _default;
+},{"url:../../img/icons.svg":"76b33937ba3968f92756f86c1adf486d","./View.js":"61b7a1b097e16436be3d54c2f1828c73"}]},{},["801d51df063a0f0dbbe3555db709de94","4d6f770d959c759d72c550c84d2f236e","175e469a7ea7db1c8c0744d04372621f"], null)
 
 //# sourceMappingURL=controller.0e9b2351.js.map

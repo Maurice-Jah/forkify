@@ -26,8 +26,6 @@ export const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       sourceUrl: recipe.source_url,
     };
-
-    console.log(state.recipe);
   } catch (err) {
     throw err;
   }
@@ -53,7 +51,7 @@ export const loadSearchResults = async function (query) {
 
 // Pagination
 export const getSearchResultsPage = function (page = state.search.page) {
-  page = state.search.page;
+  state.search.page = page;
   const start = (page - 1) * RES_PER_PAGE;
   const end = page * RES_PER_PAGE;
 
