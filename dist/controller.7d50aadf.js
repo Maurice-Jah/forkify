@@ -453,9 +453,15 @@ const controlServings = function (newServings) {
   // 2. Update the recipe view
   _recipeView.default.render(model.state.recipe);
 };
+const controlBookmark = function () {
+  model.addBookmark(model.state.recipe);
+  console.log(model.state.recipe);
+  _recipeView.default.update(model.state.recipe);
+};
 const init = function () {
   _recipeView.default.addHandlerRender(controlRecipes);
   _recipeView.default.addHandlerUpdateServings(controlServings);
+  _recipeView.default.addHandlerBookmark(controlBookmark);
   _searchView.default.addHandlerSearch(controlSearchResults);
   _paginationView.default.addHandlerClick(controlPagination);
 };
@@ -1982,7 +1988,7 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateServings = exports.state = exports.loadSearchResults = exports.loadRecipe = exports.getSearchResultsPage = void 0;
+exports.updateServings = exports.state = exports.loadSearchResults = exports.loadRecipe = exports.getSearchResultsPage = exports.addBookmark = void 0;
 var _helpers = require("./helpers.js");
 var _config = require("./config.js");
 var _regeneratorRuntime = require("regenerator-runtime");
@@ -1993,7 +1999,8 @@ const state = {
     results: [],
     page: 1,
     resultPerPage: _config.RES_PER_PAGE
-  }
+  },
+  bookmarks: []
 };
 exports.state = state;
 const loadRecipe = async function (id) {
@@ -2054,7 +2061,18 @@ const updateServings = function (newServings) {
   });
   state.recipe.servings = newServings;
 };
+
+// Adding Bookmarks
 exports.updateServings = updateServings;
+const addBookmark = function (recipe) {
+  // Add Bookmark
+  state.bookmarks.push(recipe);
+
+  // Mark recipe as bookmark
+
+  if (state.recipe.id === recipe.id) state.recipe.bookmarked = true;
+};
+exports.addBookmark = addBookmark;
 },{"./helpers.js":"0e8dcd8a4e1c61cf18f78e1c2563655d","./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
 "use strict";
 
@@ -2122,6 +2140,13 @@ class RecipeView extends _View.default {
       if (updateTo > 0) handler(updateTo);
     });
   }
+  addHandlerBookmark(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--bookmark');
+      if (!btn) return;
+      handler();
+    });
+  }
   _generateMarkup() {
     return `
         <figure class="recipe__fig">
@@ -2165,9 +2190,9 @@ class RecipeView extends _View.default {
               <use href=" ${_icons.default}#icon-user"></use>
             </svg>
           </div>
-          <button class="btn--round">
+          <button class="btn--round btn--bookmark">
             <svg class="">
-              <use href=" ${_icons.default}#icon-bookmark-fill"></use>
+              <use href="${_icons.default}#icon-bookmark${this._data.bookmarked ? '-fill' : ''}"></use>
             </svg>
           </button>
         </div>
@@ -2200,6 +2225,7 @@ class RecipeView extends _View.default {
         </div>
     
     `;
+    console.log(this._data);
   }
   _generateMarkupIngredient(ing) {
     {
