@@ -2021,6 +2021,11 @@ const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       sourceUrl: recipe.source_url
     };
+    if (state.bookmarks.some(bookmark => bookmark.id === id)) {
+      state.recipe.bookmarked = true;
+    } else {
+      state.recipe.bookmarked = false;
+    }
   } catch (err) {
     throw err;
   }
