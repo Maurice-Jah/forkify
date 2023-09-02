@@ -408,6 +408,9 @@ const controlRecipes = async function () {
     if (!id) return;
     _recipeView.default.renderSpinner();
 
+    // 0. Mark recipe as selected
+    _resultsView.default.update(model.getSearchResultsPage());
+
     // 1. Loading the Recipe
     await model.loadRecipe(id);
 
@@ -2744,7 +2747,6 @@ class View {
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   update(data) {
-    if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
     this._data = data;
     const newMarkup = this._generateMarkup();
     const newDOM = document.createRange().createContextualFragment(newMarkup);
@@ -2851,9 +2853,10 @@ class ResultsView extends _View.default {
     return this._data.map(this._generateMarkupPreview).join('');
   }
   _generateMarkupPreview(result) {
+    const id = window.location.hash.slice(1);
     return `
     <li class="preview">
-    <a class="preview__link preview__link--active" href="#${result.id}">
+    <a class="preview__link ${id === result.id ? 'preview__link--active' : ''}" href="#${result.id}">
     <figure class="preview__fig">
         <img src="${result.image}" alt="Test" />
     </figure>
