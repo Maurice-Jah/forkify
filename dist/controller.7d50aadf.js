@@ -451,11 +451,10 @@ const controlServings = function (newServings) {
   // 1. Update the recipe servings in the state
   model.updateServings(newServings);
   // 2. Update the recipe view
-  _recipeView.default.render(model.state.recipe);
+  _recipeView.default.update(model.state.recipe);
 };
 const controlBookmark = function () {
   model.addBookmark(model.state.recipe);
-  console.log(model.state.recipe);
   _recipeView.default.update(model.state.recipe);
 };
 const init = function () {
@@ -2187,7 +2186,7 @@ class RecipeView extends _View.default {
 
           <div class="recipe__user-generated">
             <svg>
-              <use href=" ${_icons.default}#icon-user"></use>
+              <use href="${_icons.default}#icon-user"></use>
             </svg>
           </div>
           <button class="btn--round btn--bookmark">
@@ -2224,8 +2223,7 @@ class RecipeView extends _View.default {
           </a>
         </div>
     
-    `;
-    console.log(this._data);
+        `;
   }
   _generateMarkupIngredient(ing) {
     {
@@ -2744,6 +2742,23 @@ class View {
     const markup = this._generateMarkup();
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  update(data) {
+    if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
+    this._data = data;
+    const newMarkup = this._generateMarkup();
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+    newElements.forEach((newEl, i) => {
+      const curEl = curElements[i];
+      if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== '') {
+        curEl.textContent = newEl.textContent;
+      }
+      if (!newEl.isEqualNode(curEl)) {
+        Array.from(newEl.attributes).forEach(attr => curEl.setAttribute(attr.name, attr.value));
+      }
+    });
   }
   _clear() {
     this._parentElement.innerHTML = '';

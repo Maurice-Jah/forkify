@@ -65,12 +65,11 @@ const controlServings = function (newServings) {
   // 1. Update the recipe servings in the state
   model.updateServings(newServings);
   // 2. Update the recipe view
-  recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
 };
 
 const controlBookmark = function () {
   model.addBookmark(model.state.recipe);
-  console.log(model.state.recipe);
   recipeView.update(model.state.recipe);
 };
 
