@@ -1990,7 +1990,7 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateServings = exports.state = exports.loadSearchResults = exports.loadRecipe = exports.getSearchResultsPage = exports.addBookmark = void 0;
+exports.updateServings = exports.state = exports.loadSearchResults = exports.loadRecipe = exports.getSearchResultsPage = exports.deleteBookmark = exports.addBookmark = void 0;
 var _helpers = require("./helpers.js");
 var _config = require("./config.js");
 var _regeneratorRuntime = require("regenerator-runtime");
@@ -2076,10 +2076,17 @@ const addBookmark = function (recipe) {
   state.bookmarks.push(recipe);
 
   // Mark recipe as bookmark
-
   if (state.recipe.id === recipe.id) state.recipe.bookmarked = true;
 };
+
+// Delete Bookmark
 exports.addBookmark = addBookmark;
+const deleteBookmark = function (id) {
+  const index = state.bookmarks.findIndex(el => el.id === id);
+  state.bookmarks.splice(index, 1);
+  if (id === recipe.id) state.recipe.bookmarked = false;
+};
+exports.deleteBookmark = deleteBookmark;
 },{"./helpers.js":"0e8dcd8a4e1c61cf18f78e1c2563655d","./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
 "use strict";
 
