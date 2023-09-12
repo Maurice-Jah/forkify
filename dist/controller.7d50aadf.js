@@ -411,6 +411,7 @@ const controlRecipes = async function () {
 
     // 0. Mark recipe as selected
     _resultsView.default.update(model.getSearchResultsPage());
+    _bookmarksView.default.update(model.state.bookmarks);
 
     // 1. Loading the Recipe
     await model.loadRecipe(id);
