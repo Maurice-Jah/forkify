@@ -100,7 +100,7 @@ export const deleteBookmark = function (id) {
   const index = state.bookmarks.findIndex(el => el.id === id);
   state.bookmarks.splice(index, 1);
 
-  if (id === recipe.id) state.recipe.bookmarked = false;
+  if (id === state.recipe.id) state.recipe.bookmarked = false;
 
   // persist bookmarks
   persistBookmarks();
@@ -114,4 +114,9 @@ const init = function () {
 
 init();
 
-console.log(state.bookmarks);
+// To clear all bookmarks
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
+};
+
+// clearBookmarks();
