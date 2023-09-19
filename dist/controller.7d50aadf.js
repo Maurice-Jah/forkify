@@ -2764,9 +2764,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class View {
   _data;
   render(data) {
+    let render = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
     if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
     this._data = data;
     const markup = this._generateMarkup();
+    if (!render) return markup;
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
@@ -2867,6 +2869,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+var _previewView = _interopRequireDefault(require("./previewView.js"));
 var _View = _interopRequireDefault(require("./View.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class ResultsView extends _View.default {
@@ -2874,26 +2877,41 @@ class ResultsView extends _View.default {
   _errorMessage = 'No Recipe found for your query. Please try another one';
   _successMessage = '';
   _generateMarkup() {
-    return this._data.map(this._generateMarkupPreview).join('');
+    return this._data.map(result => _previewView.default.render(result, false)).join('');
   }
-  _generateMarkupPreview(result) {
+}
+var _default = new ResultsView();
+exports.default = _default;
+},{"url:../../img/icons.svg":"156cd0acf52ab93e885ce559ac5e1642","./View.js":"61b7a1b097e16436be3d54c2f1828c73","./previewView.js":"e4d6583325a8b6c9380670c4f233bf07"}],"e4d6583325a8b6c9380670c4f233bf07":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+var _View = _interopRequireDefault(require("./View.js"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+class PreviewView extends _View.default {
+  _parentElement = '';
+  _generateMarkup() {
     const id = window.location.hash.slice(1);
     return `
     <li class="preview">
-    <a class="preview__link ${id === result.id ? 'preview__link--active' : ''}" href="#${result.id}">
+    <a class="preview__link ${id === this._data.id ? 'preview__link--active' : ''}" href="#${this._data.id}">
     <figure class="preview__fig">
-        <img src="${result.image}" alt="Test" />
+        <img src="${this._data.image}" alt="Test" />
     </figure>
     <div class="preview__data">
-        <h4 class="preview__title">${result.title}</h4>
-        <p class="preview__publisher">${result.publisher}</p>
+        <h4 class="preview__title">${this._data.title}</h4>
+        <p class="preview__publisher">${this._data.publisher}</p>
     </div>
     </a>
 </li>
     `;
   }
 }
-var _default = new ResultsView();
+var _default = new PreviewView();
 exports.default = _default;
 },{"url:../../img/icons.svg":"156cd0acf52ab93e885ce559ac5e1642","./View.js":"61b7a1b097e16436be3d54c2f1828c73"}],"d2063f3e7de2e4cdacfcb5eb6479db05":[function(require,module,exports) {
 "use strict";
@@ -2977,6 +2995,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _icons = _interopRequireDefault(require("url:../../img/icons.svg"));
+var _previewView = _interopRequireDefault(require("./previewView.js"));
 var _View = _interopRequireDefault(require("./View.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class BookmarksView extends _View.default {
@@ -2984,27 +3003,11 @@ class BookmarksView extends _View.default {
   _errorMessage = 'No bookmarks yet. Find a nice recipe and Bookmark it :)';
   _successMessage = '';
   _generateMarkup() {
-    return this._data.map(this._generateMarkupPreview).join('');
-  }
-  _generateMarkupPreview(result) {
-    const id = window.location.hash.slice(1);
-    return `
-    <li class="preview">
-    <a class="preview__link ${id === result.id ? 'preview__link--active' : ''}" href="#${result.id}">
-    <figure class="preview__fig">
-        <img src="${result.image}" alt="Test" />
-    </figure>
-    <div class="preview__data">
-        <h4 class="preview__title">${result.title}</h4>
-        <p class="preview__publisher">${result.publisher}</p>
-    </div>
-    </a>
-</li>
-    `;
+    return this._data.map(bookmark => _previewView.default.render(bookmark, false)).join('');
   }
 }
 var _default = new BookmarksView();
 exports.default = _default;
-},{"url:../../img/icons.svg":"156cd0acf52ab93e885ce559ac5e1642","./View.js":"61b7a1b097e16436be3d54c2f1828c73"}]},{},["bdaaeb56e0c3a7407cf45f81e8bff6dc","f9e041f9393c7856d921a188a39cfe68","175e469a7ea7db1c8c0744d04372621f"], null)
+},{"url:../../img/icons.svg":"156cd0acf52ab93e885ce559ac5e1642","./previewView.js":"e4d6583325a8b6c9380670c4f233bf07","./View.js":"61b7a1b097e16436be3d54c2f1828c73"}]},{},["bdaaeb56e0c3a7407cf45f81e8bff6dc","f9e041f9393c7856d921a188a39cfe68","175e469a7ea7db1c8c0744d04372621f"], null)
 
 //# sourceMappingURL=controller.7d50aadf.js.map
