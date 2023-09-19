@@ -476,6 +476,11 @@ const controlBookmark = function () {
 const handleBookmarks = function () {
   _bookmarksView.default.render(model.state.bookmarks);
 };
+
+// Add Recipe
+const controlAddRecipe = function (newRecipe) {
+  console.log(newRecipe);
+};
 const init = function () {
   _bookmarksView.default.addHandlerRender(handleBookmarks);
   _recipeView.default.addHandlerRender(controlRecipes);
@@ -483,6 +488,7 @@ const init = function () {
   _recipeView.default.addHandlerBookmark(controlBookmark);
   _searchView.default.addHandlerSearch(controlSearchResults);
   _paginationView.default.addHandlerClick(controlPagination);
+  _addRecipeView.default.addHandlerUpload(controlAddRecipe);
 };
 init();
 },{"core-js/modules/web.immediate.js":"140df4f8e97a45c53c66fead1f5a9e92","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16","./model.js":"aabf248f40f7693ef84a0cb99f385d1f","./views/recipeView.js":"bcae1aced0301b01ccacb3e6f7dfede8","./views/searchView.js":"c5d792f7cac03ef65de30cc0fbb2cae7","./views/resultsView.js":"eacdbc0d50ee3d2819f3ee59366c2773","./views/paginationView.js":"d2063f3e7de2e4cdacfcb5eb6479db05","./views/bookmarksView.js":"7ed9311e216aa789713f70ebeec3ed40","./views/addRecipeView.js":"4dd83c2a08c1751220d223c54dc70016"}],"140df4f8e97a45c53c66fead1f5a9e92":[function(require,module,exports) {
@@ -3072,6 +3078,14 @@ class AddRecipeView extends _View.default {
   _addHandlerHideWindow() {
     this._btnClose.addEventListener('click', this.toggleWindow.bind(this));
     this._overlay.addEventListener('click', this.toggleWindow.bind(this));
+  }
+  addHandlerUpload(handler) {
+    this._parentElement.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formArr = [...new FormData(this)];
+      const data = Object.fromEntries(formArr);
+      handler(data);
+    });
   }
   _generateMarkup() {}
 }
