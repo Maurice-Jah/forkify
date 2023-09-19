@@ -472,7 +472,11 @@ const controlBookmark = function () {
   // 3. Render Bookmarks
   _bookmarksView.default.render(model.state.bookmarks);
 };
+const handleBookmarks = function () {
+  _bookmarksView.default.render(model.state.bookmarks);
+};
 const init = function () {
+  _bookmarksView.default.addHandlerRender(handleBookmarks);
   _recipeView.default.addHandlerRender(controlRecipes);
   _recipeView.default.addHandlerUpdateServings(controlServings);
   _recipeView.default.addHandlerBookmark(controlBookmark);
@@ -2109,7 +2113,15 @@ const deleteBookmark = function (id) {
   // persist bookmarks
   persistBookmarks();
 };
+
+// Get bookmarks out from localStorage
 exports.deleteBookmark = deleteBookmark;
+const init = function () {
+  const storage = localStorage.getItem('bookmarks');
+  if (storage) state.bookmarks = JSON.parse(storage);
+};
+init();
+console.log(state.bookmarks);
 },{"./helpers.js":"0e8dcd8a4e1c61cf18f78e1c2563655d","./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
 "use strict";
 
@@ -3013,6 +3025,9 @@ class BookmarksView extends _View.default {
   _parentElement = document.querySelector('.bookmarks__list');
   _errorMessage = 'No bookmarks yet. Find a nice recipe and Bookmark it :)';
   _successMessage = '';
+  addHandlerRender(handler) {
+    window.addEventListener('load', handler);
+  }
   _generateMarkup() {
     return this._data.map(bookmark => _previewView.default.render(bookmark, false)).join('');
   }

@@ -105,3 +105,13 @@ export const deleteBookmark = function (id) {
   // persist bookmarks
   persistBookmarks();
 };
+
+// Get bookmarks out from localStorage
+const init = function () {
+  const storage = localStorage.getItem('bookmarks');
+  if (storage) state.bookmarks = JSON.parse(storage);
+};
+
+init();
+
+console.log(state.bookmarks);
