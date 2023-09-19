@@ -478,8 +478,13 @@ const handleBookmarks = function () {
 };
 
 // Add Recipe
-const controlAddRecipe = function (newRecipe) {
-  console.log(newRecipe);
+const controlAddRecipe = async function (newRecipe) {
+  try {
+    await model.uploadRecipe(newRecipe);
+  } catch (err) {
+    console.log(err);
+    _addRecipeView.default.renderError(err.message);
+  }
 };
 const init = function () {
   _bookmarksView.default.addHandlerRender(handleBookmarks);
@@ -2013,7 +2018,7 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateServings = exports.state = exports.loadSearchResults = exports.loadRecipe = exports.getSearchResultsPage = exports.deleteBookmark = exports.addBookmark = void 0;
+exports.uploadRecipe = exports.updateServings = exports.state = exports.loadSearchResults = exports.loadRecipe = exports.getSearchResultsPage = exports.deleteBookmark = exports.addBookmark = void 0;
 var _helpers = require("./helpers.js");
 var _config = require("./config.js");
 var _regeneratorRuntime = require("regenerator-runtime");
@@ -2135,6 +2140,28 @@ const clearBookmarks = function () {
 };
 
 // clearBookmarks();
+
+// Upload Recipe
+const uploadRecipe = async function (newRecipe) {
+  try {
+    const ingredients = Object.entries(newRecipe).filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '').map(ing => {
+      const ingArr = ing[1].replaceAll(' ', '').split(',');
+      if (ingArr !== 3) {
+        throw new Error('Wrong ingredient format! Please use the correct format :)');
+      }
+      const [quantity, unit, description] = ingArr;
+      return {
+        quantity: quantity ? +quantity : null,
+        unit,
+        description
+      };
+    });
+    console.log(ingredients);
+  } catch (err) {
+    throw err;
+  }
+};
+exports.uploadRecipe = uploadRecipe;
 },{"./helpers.js":"0e8dcd8a4e1c61cf18f78e1c2563655d","./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
 "use strict";
 
