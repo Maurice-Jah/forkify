@@ -2081,14 +2081,22 @@ const updateServings = function (newServings) {
   state.recipe.servings = newServings;
 };
 
-// Adding Bookmarks
+// Storing Bookmarks in localStorage
 exports.updateServings = updateServings;
+const persistBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
+
+// Adding Bookmarks
 const addBookmark = function (recipe) {
   // Add Bookmark
   state.bookmarks.push(recipe);
 
   // Mark recipe as bookmark
   if (state.recipe.id === recipe.id) state.recipe.bookmarked = true;
+
+  // persist bookmarks
+  persistBookmarks();
 };
 
 // Delete Bookmark
@@ -2097,6 +2105,9 @@ const deleteBookmark = function (id) {
   const index = state.bookmarks.findIndex(el => el.id === id);
   state.bookmarks.splice(index, 1);
   if (id === recipe.id) state.recipe.bookmarked = false;
+
+  // persist bookmarks
+  persistBookmarks();
 };
 exports.deleteBookmark = deleteBookmark;
 },{"./helpers.js":"0e8dcd8a4e1c61cf18f78e1c2563655d","./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"0e8dcd8a4e1c61cf18f78e1c2563655d":[function(require,module,exports) {
