@@ -442,7 +442,7 @@ const controlSearchResults = async function () {
     //4. Render inital pagination
     _paginationView.default.render(model.state.search);
   } catch (err) {
-    console.log(err);
+    _resultsView.default.renderError();
   }
 };
 const controlPagination = function (goToPage) {
