@@ -1,6 +1,7 @@
 // Imports
 import { async } from 'regenerator-runtime';
 import * as model from './model.js';
+import { MODAL_CLOSE_SEC } from './config.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
@@ -96,9 +97,22 @@ const handleBookmarks = function () {
 // Add Recipe
 const controlAddRecipe = async function (newRecipe) {
   try {
+    // Showing spinner
+    addRecipeView.renderSpinner();
+
     await model.uploadRecipe(newRecipe);
+
+    // Render success message
+    addRecipeView.renderSuccess();
+
+    // Render Recipe
+    recipeView.render(model.state.recipe);
+
+    // Close popup window
+    setTimeout(function () {
+      addRecipeView.toggleWindow();
+    }, MODAL_CLOSE_SEC * 1000);
   } catch (err) {
-    console.log(err);
     addRecipeView.renderError(err.message);
   }
 };
