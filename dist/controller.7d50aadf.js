@@ -2072,7 +2072,7 @@ const createObjectRecipe = function (data) {
 };
 const loadRecipe = async function (id) {
   try {
-    const data = await (0, _helpers.getJSON)(`${_config.API_URL}${id}`);
+    const data = await (0, _helpers.AJAX)(`${_config.API_URL}${id}`);
     state.recipe = createObjectRecipe(data);
     if (state.bookmarks.some(bookmark => bookmark.id === id)) {
       state.recipe.bookmarked = true;
@@ -2087,7 +2087,7 @@ exports.loadRecipe = loadRecipe;
 const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
-    const data = await (0, _helpers.getJSON)(`${_config.API_URL}?search=${query}`);
+    const data = await (0, _helpers.AJAX)(`${_config.API_URL}?search=${query}`);
     state.search.results = data.data.recipes.map(recipe => {
       return {
         id: recipe.id,
@@ -2189,7 +2189,7 @@ const uploadRecipe = async function (newRecipe) {
       ingredients
     };
     console.log(recipe);
-    const data = await (0, _helpers.sendJSON)(`${_config.API_URL}?key=${_config.KEY}`, recipe);
+    const data = await (0, _helpers.AJAX)(`${_config.API_URL}?key=${_config.KEY}`, recipe);
     state.recipe = createObjectRecipe(data);
     addBookmark(state.recipe);
   } catch (err) {
@@ -2203,7 +2203,8 @@ exports.uploadRecipe = uploadRecipe;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sendJSON = exports.getJSON = void 0;
+exports.AJAX = void 0;
+var _regeneratorRuntime = require("regenerator-runtime");
 var _config = require("./config.js");
 const timeout = function (s) {
   return new Promise(function (_, reject) {
@@ -2212,28 +2213,18 @@ const timeout = function (s) {
     }, s * 1000);
   });
 };
-const getJSON = async function (url) {
-  try {
-    const res = await Promise.race([fetch(url), timeout(_config.TIMEOUT_SEC)]);
-    const data = await res.json();
-    if (!res.ok) throw new Error(`${data.message} ${res.status}`);
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
 
-// Upload data to api
-exports.getJSON = getJSON;
-const sendJSON = async function (url, uploadData) {
+// send an get data from api
+const AJAX = async function (url) {
+  let uploadData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
   try {
-    const res = await Promise.race([fetch(url, {
+    const res = uploadData ? await Promise.race([fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(uploadData)
-    }), timeout(_config.TIMEOUT_SEC)]);
+    }), timeout(_config.TIMEOUT_SEC)]) : await Promise.race([fetch(url), timeout(_config.TIMEOUT_SEC)]);
     const data = await res.json();
     if (!res.ok) throw new Error(`${data.message} ${res.status}`);
     return data;
@@ -2241,8 +2232,8 @@ const sendJSON = async function (url, uploadData) {
     throw err;
   }
 };
-exports.sendJSON = sendJSON;
-},{"./config.js":"09212d541c5c40ff2bd93475a904f8de"}],"09212d541c5c40ff2bd93475a904f8de":[function(require,module,exports) {
+exports.AJAX = AJAX;
+},{"./config.js":"09212d541c5c40ff2bd93475a904f8de","regenerator-runtime":"e155e0d3930b156f86c48e8d05522b16"}],"09212d541c5c40ff2bd93475a904f8de":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
