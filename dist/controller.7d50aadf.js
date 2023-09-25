@@ -2072,7 +2072,7 @@ const createObjectRecipe = function (data) {
 };
 const loadRecipe = async function (id) {
   try {
-    const data = await (0, _helpers.AJAX)(`${_config.API_URL}${id}`);
+    const data = await (0, _helpers.AJAX)(`${_config.API_URL}${id}?key=${_config.KEY}`);
     state.recipe = createObjectRecipe(data);
     if (state.bookmarks.some(bookmark => bookmark.id === id)) {
       state.recipe.bookmarked = true;
@@ -2087,13 +2087,16 @@ exports.loadRecipe = loadRecipe;
 const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
-    const data = await (0, _helpers.AJAX)(`${_config.API_URL}?search=${query}`);
+    const data = await (0, _helpers.AJAX)(`${_config.API_URL}?search=${query}&key=${_config.KEY}`);
     state.search.results = data.data.recipes.map(recipe => {
       return {
         id: recipe.id,
         title: recipe.title,
         image: recipe.image_url,
-        publisher: recipe.publisher
+        publisher: recipe.publisher,
+        ...(recipe.key && {
+          key: recipe.key
+        })
       };
     });
     state.search.page = 1;
@@ -2323,7 +2326,7 @@ class RecipeView extends _View.default {
             </div>
           </div>
 
-          <div class="recipe__user-generated">
+          <div class="recipe__user-generated ${this._data.key ? '' : 'hidden'}">
             <svg>
               <use href="${_icons.default}#icon-user"></use>
             </svg>
@@ -3017,6 +3020,11 @@ class PreviewView extends _View.default {
     <div class="preview__data">
         <h4 class="preview__title">${this._data.title}</h4>
         <p class="preview__publisher">${this._data.publisher}</p>
+        <div class="preview__user-generated ${this._data.key ? '' : 'hidden'}">
+        <svg>
+          <use href="${_icons.default}#icon-user"></use>
+        </svg>
+      </div>
     </div>
     </a>
 </li>
